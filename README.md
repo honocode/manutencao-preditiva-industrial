@@ -20,7 +20,8 @@ This solution uses machine learning techniques to analyze industrial operating p
 - Synthetic industrial dataset generation
 - Data analysis and preprocessing
 - Predictive modeling with Random Forest
-- Model evaluation and performance metrics
+- Model evaluation with separate train, validation and test sets
+- Failure-focused threshold selection (target recall) and false-alarm reporting
 - Interactive monitoring dashboard
 - Feature importance analysis
 - Failure risk estimation
@@ -46,6 +47,8 @@ python3 src/generate_data.py
 python3 src/train.py
 python3 -m streamlit run src/dashboard.py
 ```
+
+The alert threshold is selected on the validation set to target 80% recall, choosing the highest threshold that reaches that target. The test set remains separate and reports detected failures, missed failures and false alarms. This target is a demonstration setting, not an operational recommendation. Results from the synthetic data do not establish real-world performance.
 
 ## Project Structure
 

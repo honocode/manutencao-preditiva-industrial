@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
     average_precision_score, classification_report, confusion_matrix,
-    ConfusionMatrixDisplay, f1_score, precision_recall_curve, roc_auc_score
+    ConfusionMatrixDisplay, precision_recall_curve, roc_auc_score
 )
 from sklearn.model_selection import train_test_split
 
@@ -23,15 +23,18 @@ FEATURES = [
 ]
 TARGET = "failure"
 
-def choose_threshold(y_true, probabilities):
+TARGET_RECALL = 0.80
+
+def choose_threshold(y_true, probabilities, target_recall=TARGET_RECALL):
     precision, recall, thresholds = precision_recall_curve(y_true, probabilities)
     if len(thresholds) == 0:
         return 0.5
-    # precision/recall têm um elemento a mais que thresholds.
-    f1_values = (2 * precision[:-1] * recall[:-1]) / (
-        precision[:-1] + recall[:-1] + 1e-12
-    )
-    return float(thresholds[int(np.nanargmax(f1_values))])
+    # Prioriza encontrar falhas; entre limiares que atingem a meta,
+    # escolhe o mais alto para reduzir alarmes falsos.
+    eligible = np.flatnonzero(recall[:-1] >= target_recall)
+    if len(eligible) == 0:
+        return float(thresholds[int(np.argmax(recall[:-1]))])
+    return float(thresholds[eligible[-1]])
 
 def main():
     if not DATA.exists():
@@ -67,8 +70,19 @@ def main():
         y_test, test_pred, output_dict=True, zero_division=0
     )
     cm = confusion_matrix(y_test, test_pred, labels=[0, 1])
+    tn, fp, fn, tp = (int(value) for value in cm.ravel())
     metrics = {
         "threshold": threshold,
+        "threshold_policy": "Maior limiar que atinge recall alvo na validação",
+        "target_recall": TARGET_RECALL,
+        "validation_recall_at_threshold": float(
+            np.mean((valid_prob >= threshold)[y_valid.to_numpy() == 1])
+        ),
+        "true_negatives": tn,
+        "false_positives": fp,
+        "false_negatives": fn,
+        "true_positives": tp,
+        "test_prevalence": float(y_test.mean()),
         "roc_auc": float(roc_auc_score(y_test, test_prob)),
         "average_precision": float(average_precision_score(y_test, test_prob)),
         "precision_failure": float(report.get("1", {}).get("precision", 0)),
@@ -110,7 +124,9 @@ def main():
     plt.savefig(REPORT_DIR / "feature_importance.png", dpi=170)
     plt.close()
 
+    print(f"Recall alvo na validação: {TARGET_RECALL:.0%}")
     print(f"Limiar selecionado na validação: {threshold:.4f}")
+    print(f"Falhas detectadas/perdidas no teste: {tp}/{fn}; alarmes falsos: {fp}")
     print(f"ROC-AUC (teste): {metrics['roc_auc']:.3f}")
     print(f"Average Precision (teste): {metrics['average_precision']:.3f}")
     print("\nRelatório de classificação:")

@@ -39,6 +39,7 @@ k1.metric("Registros", f"{len(df):,}")
 k2.metric("Falhas simuladas", f"{int(df.failure.sum()):,}")
 k3.metric("Taxa de falha", f"{df.failure.mean():.2%}")
 k4.metric("Recall no teste", f"{metrics['recall_failure']:.1%}")
+st.caption(f"Base de falhas no teste: {metrics['test_prevalence']:.1%}. Avaliação em amostras sintéticas.")
 
 st.divider()
 st.subheader("Simulador de condição operacional")
@@ -86,6 +87,13 @@ m1.metric("ROC-AUC", f"{metrics['roc_auc']:.3f}")
 m2.metric("Average Precision", f"{metrics['average_precision']:.3f}")
 m3.metric("Precision (falha)", f"{metrics['precision_failure']:.1%}")
 m4.metric("F1-score (falha)", f"{metrics['f1_failure']:.1%}")
+st.caption(
+    f"No teste: {metrics['true_positives']} falhas detectadas, "
+    f"{metrics['false_negatives']} não detectadas e "
+    f"{metrics['false_positives']} alarmes falsos. "
+    f"O limiar foi escolhido na validação para buscar recall de "
+    f"{metrics['target_recall']:.0%}; o teste é uma avaliação separada."
+)
 
 c1, c2 = st.columns(2)
 with c1:
