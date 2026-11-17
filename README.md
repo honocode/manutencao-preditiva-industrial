@@ -68,4 +68,14 @@ Data Science | Python | Machine Learning | Industrial Analytics
 
 ## Dashboard Preview
 
-![Industrial Predictive Maintenance Dashboard](images/dashboard.png)
+### 1. Main Dashboard
+
+![Main Dashboard](images/dashboard1.png)
+
+### 2. Industrial Monitoring
+
+![Industrial Monitoring](images/dashboard2.png)
+
+### 3. Predictive Analysis
+
+![Predictive Analysis](images/dashboard3.png)
