@@ -60,20 +60,18 @@ if not MODEL_PATH.exists() or not DATA_PATH.exists() or not METRICS_PATH.exists(
     st.error("Arquivos do modelo ou dos relatórios não encontrados. Execute primeiro `python3 src/generate_data.py` e `python3 src/train.py`.")
     st.stop()
 
+def file_version(path):
+    """Inclui a versão do arquivo na chave do cache para evitar dados antigos."""
+    stat = path.stat()
+    return stat.st_mtime_ns, stat.st_size
+
 @st.cache_resource
-def load_bundle(path):
+def load_bundle(path, version):
     return joblib.load(path)
 
 @st.cache_data
-def load_frame(path):
+def load_frame(path, version):
     return pd.read_csv(path)
-
-bundle = load_bundle(str(MODEL_PATH))
-model = bundle["model"]
-features = bundle["features"]
-threshold = float(bundle["threshold"])
-metrics = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
-df = load_frame(str(DATA_PATH))
 
 with st.sidebar:
     st.markdown("<div style='font-size:1.4rem;font-weight:800;font-family:Manrope,sans-serif'>🏭  INDÚSTRIA</div>", unsafe_allow_html=True)
@@ -88,6 +86,18 @@ with st.sidebar:
     hours = st.number_input("Horas de operação", 1, 24000, 8000, step=100)
     st.divider()
     st.caption("Modelo demonstrativo · dados sintéticos")
+    if st.button("⟳  Atualizar dados e modelo", use_container_width=True):
+        st.cache_data.clear()
+        st.cache_resource.clear()
+        st.rerun()
+    st.caption("Use este botão após regenerar os dados ou treinar um novo modelo.")
+
+bundle = load_bundle(str(MODEL_PATH), file_version(MODEL_PATH))
+model = bundle["model"]
+features = bundle["features"]
+threshold = float(bundle["threshold"])
+metrics = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
+df = load_frame(str(DATA_PATH), file_version(DATA_PATH))
 
 sample = pd.DataFrame([{
     "temperature_c": temp,
@@ -144,9 +154,9 @@ with tab_overview:
     )
     col1, col2 = st.columns(2)
     with col1:
-        st.image(str(ROOT / "reports" / "confusion_matrix.png"), caption="Matriz de confusão · conjunto de teste", use_container_width=True)
+        st.image((ROOT / "reports" / "confusion_matrix.png").read_bytes(), caption="Matriz de confusão · conjunto de teste", use_container_width=True)
     with col2:
-        st.image(str(ROOT / "reports" / "feature_importance.png"), caption="Importância das variáveis no modelo", use_container_width=True)
+        st.image((ROOT / "reports" / "feature_importance.png").read_bytes(), caption="Importância das variáveis no modelo", use_container_width=True)
 
 with tab_simulator:
     st.markdown('<div class="section-title">Estimativa para a condição selecionada</div>', unsafe_allow_html=True)
