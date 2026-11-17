@@ -1,0 +1,50 @@
+{
+  "threshold": 0.510893651614285,
+  "roc_auc": 0.7399450231481483,
+  "average_precision": 0.11891190914702601,
+  "precision_failure": 0.12941176470588237,
+  "recall_failure": 0.22916666666666666,
+  "f1_failure": 0.16541353383458646,
+  "classification_report": {
+    "0": {
+      "precision": 0.9668161434977578,
+      "recall": 0.9357638888888888,
+      "f1-score": 0.9510366122629025,
+      "support": 1152.0
+    },
+    "1": {
+      "precision": 0.12941176470588237,
+      "recall": 0.22916666666666666,
+      "f1-score": 0.16541353383458646,
+      "support": 48.0
+    },
+    "accuracy": 0.9075,
+    "macro avg": {
+      "precision": 0.5481139541018201,
+      "recall": 0.5824652777777778,
+      "f1-score": 0.5582250730487445,
+      "support": 1200.0
+    },
+    "weighted avg": {
+      "precision": 0.9333199683460828,
+      "recall": 0.9075,
+      "f1-score": 0.9196116891257698,
+      "support": 1200.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      1078,
+      74
+    ],
+    [
+      37,
+      11
+    ]
+  ],
+  "train_rows": 5600,
+  "validation_rows": 1200,
+  "test_rows": 1200,
+  "test_failures": 48,
+  "note": "Avalia\u00e7\u00e3o em dados sint\u00e9ticos; n\u00e3o representa desempenho industrial real."
+}
