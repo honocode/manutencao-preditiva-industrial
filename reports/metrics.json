@@ -1,58 +1,58 @@
 {
-  "threshold": 0.10979121267429857,
+  "threshold": 0.16610741742909657,
   "threshold_policy": "Maior limiar que atinge recall alvo na valida\u00e7\u00e3o",
   "target_recall": 0.8,
-  "validation_recall_at_threshold": 0.8125,
-  "true_negatives": 618,
-  "false_positives": 534,
-  "false_negatives": 11,
-  "true_positives": 37,
-  "test_prevalence": 0.04,
-  "roc_auc": 0.7399450231481483,
-  "average_precision": 0.11891190914702601,
-  "precision_failure": 0.0647985989492119,
-  "recall_failure": 0.7708333333333334,
-  "f1_failure": 0.11954765751211632,
+  "validation_recall_at_threshold": 0.8,
+  "true_negatives": 718,
+  "false_positives": 427,
+  "false_negatives": 22,
+  "true_positives": 33,
+  "test_prevalence": 0.04583333333333333,
+  "roc_auc": 0.7088050813815006,
+  "average_precision": 0.1676522617931609,
+  "precision_failure": 0.07173913043478261,
+  "recall_failure": 0.6,
+  "f1_failure": 0.12815533980582525,
   "classification_report": {
     "0": {
-      "precision": 0.9825119236883942,
-      "recall": 0.5364583333333334,
-      "f1-score": 0.6939921392476137,
-      "support": 1152.0
+      "precision": 0.9702702702702702,
+      "recall": 0.6270742358078603,
+      "f1-score": 0.7618037135278515,
+      "support": 1145.0
     },
     "1": {
-      "precision": 0.0647985989492119,
-      "recall": 0.7708333333333334,
-      "f1-score": 0.11954765751211632,
-      "support": 48.0
+      "precision": 0.07173913043478261,
+      "recall": 0.6,
+      "f1-score": 0.12815533980582525,
+      "support": 55.0
     },
-    "accuracy": 0.5458333333333333,
+    "accuracy": 0.6258333333333334,
     "macro avg": {
-      "precision": 0.523655261318803,
-      "recall": 0.6536458333333334,
-      "f1-score": 0.406769898379865,
+      "precision": 0.5210047003525264,
+      "recall": 0.6135371179039302,
+      "f1-score": 0.4449795266668384,
       "support": 1200.0
     },
     "weighted avg": {
-      "precision": 0.9458033906988269,
-      "recall": 0.5458333333333333,
-      "f1-score": 0.6710143599781939,
+      "precision": 0.9290875930278103,
+      "recall": 0.6258333333333334,
+      "f1-score": 0.7327614963989253,
       "support": 1200.0
     }
   },
   "confusion_matrix": [
     [
-      618,
-      534
+      718,
+      427
     ],
     [
-      11,
-      37
+      22,
+      33
     ]
   ],
   "train_rows": 5600,
   "validation_rows": 1200,
   "test_rows": 1200,
-  "test_failures": 48,
+  "test_failures": 55,
   "note": "Avalia\u00e7\u00e3o em dados sint\u00e9ticos; n\u00e3o representa desempenho industrial real."
 }

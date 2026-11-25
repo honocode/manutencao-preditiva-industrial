@@ -71,12 +71,31 @@ def load_bundle(path, version):
 
 @st.cache_data
 def load_frame(path, version):
-    return pd.read_csv(path)
+    return pd.read_csv(path, parse_dates=["timestamp"])
+
+bundle = load_bundle(str(MODEL_PATH), file_version(MODEL_PATH))
+model = bundle["model"]
+features = bundle["features"]
+threshold = float(bundle["threshold"])
+metrics = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
+df = load_frame(str(DATA_PATH), file_version(DATA_PATH))
+
+required_history_columns = {"timestamp", "asset_id"}
+if not required_history_columns.issubset(df.columns):
+    st.error("A base ainda não tem histórico por equipamento. Execute `python3 src/generate_data.py` e depois `python3 src/train.py`.")
+    st.stop()
+
+asset_ids = sorted(df["asset_id"].dropna().unique().tolist())
+if not asset_ids:
+    st.error("Nenhum equipamento foi encontrado na base.")
+    st.stop()
 
 with st.sidebar:
     st.markdown("<div style='font-size:1.4rem;font-weight:800;font-family:Manrope,sans-serif'>🏭  INDÚSTRIA</div>", unsafe_allow_html=True)
     st.markdown("<p style='font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;margin-top:.2rem'>CENTRO DE MONITORAMENTO</p>", unsafe_allow_html=True)
     st.divider()
+    st.markdown("### Equipamento selecionado")
+    selected_asset = st.selectbox("Máquina", asset_ids, index=0)
     st.markdown("### Simulador de condição")
     st.markdown("Ajuste os parâmetros para consultar a estimativa do modelo.")
     temp = st.slider("Temperatura · °C", 35.0, 120.0, 72.0, 0.5)
@@ -92,12 +111,16 @@ with st.sidebar:
         st.rerun()
     st.caption("Use este botão após regenerar os dados ou treinar um novo modelo.")
 
-bundle = load_bundle(str(MODEL_PATH), file_version(MODEL_PATH))
-model = bundle["model"]
-features = bundle["features"]
-threshold = float(bundle["threshold"])
-metrics = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
-df = load_frame(str(DATA_PATH), file_version(DATA_PATH))
+asset_history = (
+    df.loc[df["asset_id"] == selected_asset]
+    .sort_values("timestamp")
+    .tail(120)
+    .copy()
+)
+asset_probabilities = model.predict_proba(asset_history[features])[:, 1]
+asset_history["failure_score"] = asset_probabilities
+asset_history["alert_threshold"] = threshold
+latest_reading = asset_history.iloc[-1]
 
 sample = pd.DataFrame([{
     "temperature_c": temp,
@@ -122,15 +145,40 @@ st.markdown(
 st.warning("Este painel usa dados sintéticos para fins educacionais. As estimativas não foram validadas para máquinas reais.", icon="⚠️")
 
 st.markdown('<div class="section-title">Visão geral da base</div>', unsafe_allow_html=True)
-st.markdown('<div class="section-note">Indicadores do conjunto usado nesta demonstração.</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="section-note">Base demonstrativa · equipamento selecionado: <b>{selected_asset}</b>.</div>', unsafe_allow_html=True)
 k1, k2, k3, k4 = st.columns(4)
-k1.metric("Registros analisados", f"{len(df):,}")
-k2.metric("Falhas simuladas", f"{int(df.failure.sum()):,}")
-k3.metric("Taxa de falha", f"{df.failure.mean():.1%}")
+k1.metric("Equipamentos", f"{len(asset_ids)}")
+k2.metric("Leituras na base", f"{len(df):,}")
+k3.metric("Falhas simuladas", f"{int(df.failure.sum()):,}")
 k4.metric("Recall no teste", f"{metrics['recall_failure']:.1%}", help="Proporção das falhas do conjunto de teste que o modelo identificou.")
 
+st.markdown(f'<div class="section-title">Última leitura · {selected_asset}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="section-note">{latest_reading["timestamp"].strftime("%d/%m/%Y %H:%M UTC")} · resumo da leitura mais recente deste equipamento.</div>', unsafe_allow_html=True)
+r1, r2, r3, r4 = st.columns(4)
+r1.metric("Temperatura", f"{latest_reading['temperature_c']:.1f} °C")
+r2.metric("Vibração", f"{latest_reading['vibration_mm_s']:.2f} mm/s")
+r3.metric("Pressão", f"{latest_reading['pressure_bar']:.1f} bar")
+r4.metric("Score estimado", f"{latest_reading['failure_score']:.1%}")
+
 st.markdown("<br>", unsafe_allow_html=True)
-tab_overview, tab_simulator, tab_data = st.tabs(["Desempenho", "Simulador", "Dados e método"])
+tab_overview, tab_history, tab_simulator, tab_data = st.tabs(["Desempenho", "Histórico", "Simulador", "Dados e método"])
+
+with tab_history:
+    st.markdown(f'<div class="section-title">Histórico · {selected_asset}</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-note">Até 120 leituras recentes. As curvas são sintéticas e servem para demonstrar a navegação temporal.</div>', unsafe_allow_html=True)
+    chart1, chart2 = st.columns(2)
+    with chart1:
+        st.markdown("#### Temperatura")
+        st.line_chart(asset_history.set_index("timestamp")[["temperature_c"]], height=260)
+    with chart2:
+        st.markdown("#### Vibração")
+        st.line_chart(asset_history.set_index("timestamp")[["vibration_mm_s"]], height=260)
+    st.markdown("#### Score estimado ao longo do tempo")
+    st.line_chart(
+        asset_history.set_index("timestamp")[["failure_score", "alert_threshold"]],
+        height=280,
+    )
+    st.caption("A linha de limiar serve como referência visual; scores sintéticos não devem orientar manutenção real.")
 
 with tab_overview:
     st.markdown('<div class="section-title">Desempenho do modelo</div>', unsafe_allow_html=True)
@@ -185,6 +233,11 @@ with tab_data:
     info1.metric("Amostras de treino", f"{metrics['train_rows']:,}")
     info2.metric("Amostras de validação", f"{metrics['validation_rows']:,}")
     info3.metric("Amostras de teste", f"{metrics['test_rows']:,}")
-    st.markdown("#### Amostra da base sintética")
-    st.dataframe(df.head(20), hide_index=True, use_container_width=True)
+    st.markdown("#### Leituras recentes do equipamento")
+    visible_columns = ["timestamp", "asset_id", *features, "failure"]
+    st.dataframe(
+        asset_history[visible_columns].sort_values("timestamp", ascending=False).head(20),
+        hide_index=True,
+        use_container_width=True,
+    )
     st.markdown('<div class="footnote">Os dados foram gerados artificialmente. Métricas e scores servem apenas para demonstração e não devem orientar manutenção real.</div>', unsafe_allow_html=True)

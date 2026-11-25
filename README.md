@@ -22,13 +22,13 @@ This solution uses machine learning techniques to analyze industrial operating p
 - Predictive modeling with Random Forest
 - Model evaluation with separate train, validation and test sets
 - Failure-focused threshold selection (target recall) and false-alarm reporting
-- Interactive monitoring dashboard
+- Interactive monitoring dashboard with equipment selection and temporal history
 - Feature importance analysis
 - Failure risk estimation
 
 ## Dataset
 
-The project uses 8,000 synthetically generated records containing:
+The project uses 8,000 synthetically generated readings across 20 simulated machines, with timestamps spanning roughly 100 days. Each record contains:
 
 - Temperature
 - Vibration
@@ -36,6 +36,7 @@ The project uses 8,000 synthetically generated records containing:
 - Pressure
 - Operating hours
 - Failure indicator
+- Equipment identifier (`asset_id`) and reading timestamp (`timestamp`) for historical views
 
 **Note:** The dataset is synthetic and intended exclusively for educational and demonstration purposes.
 
@@ -47,6 +48,8 @@ python3 src/generate_data.py
 python3 src/train.py
 python3 -m streamlit run src/dashboard.py
 ```
+
+The dashboard lets you select a simulated equipment asset and inspect recent temperature, vibration and model-score trends. The `asset_id` and `timestamp` fields are used for dashboard filtering and charts; they are not model inputs.
 
 The alert threshold is selected on the validation set to target 80% recall, choosing the highest threshold that reaches that target. The test set remains separate and reports detected failures, missed failures and false alarms. This target is a demonstration setting, not an operational recommendation. Results from the synthetic data do not establish real-world performance.
 
