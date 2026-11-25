@@ -231,12 +231,11 @@ with tab_simulator:
         st.metric("Limiar atual", f"{threshold:.1%}")
         st.progress(min(max(probability, 0.0), 1.0))
     with right:
-        if probability >= threshold:
-            st.error("Acima do limiar de alerta do modelo", icon="🚨")
-        elif probability >= threshold * 0.5:
-            st.warning("Faixa intermediária do simulador", icon="👀")
-        else:
-            st.success("Abaixo do limiar de alerta", icon="✅")
+        if probability < threshold:
+            if probability >= threshold * 0.5:
+                st.warning("Faixa intermediária do simulador", icon="👀")
+            else:
+                st.success("Abaixo do limiar de alerta", icon="✅")
         st.markdown("#### Parâmetros selecionados")
         params = pd.DataFrame({"Parâmetro": ["Temperatura", "Vibração", "Rotação", "Pressão", "Horas de operação"], "Valor": [f"{temp:.1f} °C", f"{vibration:.1f} mm/s", f"{rpm:.0f} RPM", f"{pressure:.1f} bar", f"{hours:,} h"]})
         st.dataframe(params, hide_index=True, use_container_width=True)
