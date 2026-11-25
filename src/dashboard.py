@@ -21,7 +21,7 @@ st.markdown(
     """
     <style>
       @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
-      :root { --ink:#1F2937; --muted:#667b89; --teal:#1E40AF; --line:#e3ebef; --paper:#F3F4F6; }
+      :root { --ink:#1F2937; --muted:#667b89; --teal:#3B82F6; --primary-color:#3B82F6; --line:#e3ebef; --paper:#F3F4F6; }
       html, body, [class*="css"] { font-family:'DM Sans',sans-serif; color:var(--ink); }
       .stApp { background:var(--paper); }
       [data-testid="stHeader"] { background:rgba(243,244,246,.88); }
@@ -49,9 +49,18 @@ st.markdown(
       .info-label { color:var(--muted); font-size:.77rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; margin-bottom:.35rem; }
       .info-value { color:var(--ink); font-family:Manrope,sans-serif; font-size:1.6rem; line-height:1.2; font-weight:800; }
       .info-detail { color:var(--muted); font-size:.82rem; margin-top:.35rem; }
-      .stTabs [data-baseweb="tab-list"] { gap:.45rem; border-bottom:1px solid var(--line); }
-      .stTabs [data-baseweb="tab"] { background:transparent; border-radius:8px 8px 0 0; padding:.65rem 1rem; }
-      .stTabs [aria-selected="true"] { color:var(--teal); }
+      .stTabs [data-baseweb="tab-list"], [role="tablist"] { gap:.55rem !important; border-bottom:0 !important; align-items:center; }
+      [data-baseweb="tab-list"] { border-bottom:0 !important; box-shadow:none !important; gap:.55rem !important; }
+      [data-baseweb="tab-highlight"], [data-baseweb="tab-border"] { display:none !important; visibility:hidden !important; height:0 !important; border:0 !important; background:none !important; }
+      [role="tablist"]::before, [role="tablist"]::after, [data-baseweb="tab-list"]::before, [data-baseweb="tab-list"]::after, [role="tab"]::before, [role="tab"]::after { display:none !important; content:none !important; border:0 !important; box-shadow:none !important; }
+      .stTabs [data-baseweb="tab"], [role="tab"] { box-sizing:border-box !important; width:max-content !important; min-width:max-content !important; white-space:nowrap !important; padding:.6rem .9rem !important; margin:0 !important; border:0 !important; border-radius:0 !important; background:transparent !important; color:#374151 !important; -webkit-text-fill-color:#374151 !important; opacity:1 !important; font-size:.95rem !important; font-weight:700 !important; line-height:1.35 !important; }
+      .stTabs [data-baseweb="tab"] *, [role="tab"] * { color:#374151 !important; -webkit-text-fill-color:#374151 !important; opacity:1 !important; }
+      .stTabs [data-baseweb="tab"][aria-selected="true"], [role="tab"][aria-selected="true"] { background:#3B82F6 !important; background-image:none !important; border:0 !important; border-bottom:0 !important; border-radius:0 !important; box-shadow:none !important; color:#FFFFFF !important; -webkit-text-fill-color:#FFFFFF !important; }
+      [role="tab"][aria-selected="true"] { position:relative !important; z-index:3 !important; }
+      [role="tab"][aria-selected="true"]::after { content:"" !important; display:block !important; position:absolute !important; left:0 !important; right:0 !important; bottom:-2px !important; height:4px !important; background:#3B82F6 !important; border:0 !important; box-shadow:none !important; z-index:5 !important; }
+      .stTabs [data-baseweb="tab"][aria-selected="true"] *, [role="tab"][aria-selected="true"] * { color:#FFFFFF !important; -webkit-text-fill-color:#FFFFFF !important; }
+      .stTabs [data-baseweb="tab"][aria-selected="true"] *, [role="tab"][aria-selected="true"] * { border:0 !important; box-shadow:none !important; background-image:none !important; }
+      .stTabs [data-baseweb="tab"]:focus-visible, [role="tab"]:focus-visible { outline:3px solid #93C5FD !important; outline-offset:2px; }
       div[data-testid="stAlert"] { border-radius:12px; color:#1F2937; background:#FFFFFF !important; border:1px solid #E5E7EB; }
       div[data-testid="stAlert"] p { color:#1F2937 !important; }
       div[data-testid="stAlert"] [data-testid="stMarkdownContainer"] { color:#1F2937 !important; background:#FFFFFF !important; }
@@ -156,15 +165,6 @@ st.markdown(
     <div class="hero">
       <h1>Manutenção preditiva</h1>
       <p class="hero-sub">Visão demonstrativa da condição dos equipamentos e do desempenho do modelo.</p>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-st.markdown(
-    """
-    <div class="notice-warning">
-      <span class="notice-warning-icon">⚠️</span>
-      <span class="notice-warning-text">Este painel usa dados sintéticos para fins educacionais. As estimativas não foram validadas para máquinas reais.</span>
     </div>
     """,
     unsafe_allow_html=True,
