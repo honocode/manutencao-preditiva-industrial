@@ -67,7 +67,7 @@ st.markdown(
       .notice-warning { display:flex; align-items:flex-start; gap:.75rem; margin:0 0 1rem; padding:.9rem 1rem; color:#1F2937; background:#FFFFFF; border:1px solid #E5E7EB; border-left:4px solid #D97706; border-radius:12px; }
       .notice-warning-icon, .notice-info-icon { flex:0 0 auto; line-height:1.4; }
       .notice-warning-text, .notice-info-text { color:#1F2937; line-height:1.5; }
-      .notice-info { display:flex; align-items:flex-start; gap:.75rem; margin:0 0 1rem; padding:.9rem 1rem; color:#1F2937; background:#FFFFFF; border:1px solid #E5E7EB; border-left:4px solid #1E40AF; border-radius:12px; }
+      .notice-info { display:flex; align-items:flex-start; gap:.75rem; margin:1.25rem 0 1rem; padding:.9rem 1rem; color:#1F2937; background:#FFFFFF; border:1px solid #E5E7EB; border-left:4px solid #1E40AF; border-radius:12px; }
       .footnote { color:#738692; font-size:.78rem; padding-top:.6rem; }
       hr { border-color:var(--line); }
     </style>
