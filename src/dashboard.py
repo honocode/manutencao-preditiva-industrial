@@ -25,6 +25,8 @@ st.markdown(
       html, body, [class*="css"] { font-family:'DM Sans',sans-serif; color:var(--ink); }
       .stApp { background:var(--paper); }
       [data-testid="stHeader"] { background:rgba(243,244,246,.88); }
+      [data-testid="stHeader"] button, [data-testid="stHeader"] button *, [data-testid="stSidebarCollapsedControl"] button, [data-testid="stSidebarCollapsedControl"] button * { color:#1F2937 !important; fill:#1F2937 !important; opacity:1 !important; }
+      [data-testid="stHeader"] button:hover, [data-testid="stSidebarCollapsedControl"] button:hover { background:#E5E7EB !important; }
       [data-testid="stSidebar"] { background:#172554; }
       [data-testid="stSidebar"] * { color:#f2f7f8 !important; }
       [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p { color:#b8cbd2 !important; }
