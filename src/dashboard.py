@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MODEL_PATH = ROOT / "models" / "predictive_maintenance.joblib"
 DATA_PATH = ROOT / "data" / "industrial_synthetic.csv"
 METRICS_PATH = ROOT / "reports" / "metrics.json"
+LOGO_PATH = ROOT / "images" / "honocode_logo.png"
 
 st.set_page_config(
     page_title="Manutenção Preditiva | Monitoramento",
@@ -96,8 +97,9 @@ if not asset_ids:
     st.stop()
 
 with st.sidebar:
-    st.markdown("<div style='font-size:1.4rem;font-weight:800;font-family:Manrope,sans-serif'>🏭  INDÚSTRIA</div>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;margin-top:.2rem'>CENTRO DE MONITORAMENTO</p>", unsafe_allow_html=True)
+    logo_left, logo_center, logo_right = st.columns([1, 2, 1], gap="small")
+    with logo_center:
+        st.image(str(LOGO_PATH), width=145)
     st.divider()
     st.markdown("### Equipamento selecionado")
     selected_asset = st.selectbox("Máquina", asset_ids, index=0)
@@ -139,7 +141,6 @@ probability = float(model.predict_proba(sample)[0, 1])
 st.markdown(
     """
     <div class="hero">
-      <div class="hero-kicker">Painel de confiabilidade</div>
       <h1>Manutenção preditiva</h1>
       <p class="hero-sub">Visão demonstrativa da condição dos equipamentos e do desempenho do modelo.</p>
     </div>
