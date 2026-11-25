@@ -52,8 +52,9 @@ st.markdown(
       div[data-testid="stAlert"] p { color:#1F2937 !important; }
       div[data-testid="stAlert"] [data-testid="stMarkdownContainer"] { color:#1F2937 !important; background:#FFFFFF !important; }
       .notice-warning { display:flex; align-items:flex-start; gap:.75rem; margin:0 0 1rem; padding:.9rem 1rem; color:#1F2937; background:#FFFFFF; border:1px solid #E5E7EB; border-left:4px solid #D97706; border-radius:12px; }
-      .notice-warning-icon { flex:0 0 auto; line-height:1.4; }
-      .notice-warning-text { color:#1F2937; line-height:1.5; }
+      .notice-warning-icon, .notice-info-icon { flex:0 0 auto; line-height:1.4; }
+      .notice-warning-text, .notice-info-text { color:#1F2937; line-height:1.5; }
+      .notice-info { display:flex; align-items:flex-start; gap:.75rem; margin:0 0 1rem; padding:.9rem 1rem; color:#1F2937; background:#FFFFFF; border:1px solid #E5E7EB; border-left:4px solid #1E40AF; border-radius:12px; }
       .footnote { color:#738692; font-size:.78rem; padding-top:.6rem; }
       hr { border-color:var(--line); }
     </style>
@@ -207,11 +208,14 @@ with tab_overview:
     x1.metric("Falhas detectadas", metrics["true_positives"])
     x2.metric("Falhas não detectadas", metrics["false_negatives"])
     x3.metric("Alertas falsos", metrics["false_positives"])
-    st.info(
-        f"Limiar de alerta: **{threshold:.1%}**. Foi escolhido na validação para buscar recall de "
-        f"{metrics['target_recall']:.0%}; no teste, o recall observado foi de {metrics['recall_failure']:.1%}. "
-        "A meta é apenas demonstrativa e pode gerar muitos alertas falsos.",
-        icon="ℹ️",
+    st.markdown(
+        f"""
+        <div class="notice-info">
+          <span class="notice-info-icon">ℹ️</span>
+          <span class="notice-info-text"><strong>Limiar de alerta: {threshold:.1%}.</strong> Foi escolhido na validação para buscar recall de {metrics['target_recall']:.0%}; no teste, o recall observado foi de {metrics['recall_failure']:.1%}. A meta é apenas demonstrativa e pode gerar muitos alertas falsos.</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
     col1, col2 = st.columns(2)
     with col1:
