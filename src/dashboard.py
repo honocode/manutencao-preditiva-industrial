@@ -40,7 +40,9 @@ st.markdown(
       .section-title { font-family:Manrope,sans-serif; font-size:1.15rem; font-weight:750; color:var(--ink); margin:.7rem 0 .15rem 0; }
       .section-note { color:var(--muted); font-size:.88rem; margin:0 0 .85rem 0; }
       div[data-testid="stMetric"] { background:white; border:1px solid var(--line); border-radius:14px; padding:1rem 1.05rem; box-shadow:0 3px 12px rgba(20,48,65,.035); }
-      div[data-testid="stMetricLabel"] p { color:#627887; font-size:.82rem; font-weight:600; }
+      html body .stApp div[data-testid="stMetric"] div[data-testid="stMetricLabel"], html body .stApp div[data-testid="stMetric"] div[data-testid="stMetricLabel"] * { color:#1F2937 !important; -webkit-text-fill-color:#1F2937 !important; opacity:1 !important; }
+      html body .stApp div[data-testid="stMetric"] div[data-testid="stMetricLabel"] p, html body .stApp div[data-testid="stMetric"] div[data-testid="stMetricLabel"] label { color:#1F2937 !important; -webkit-text-fill-color:#1F2937 !important; font-size:.88rem; font-weight:700; opacity:1 !important; }
+      .section-note { color:#4B5563 !important; opacity:1 !important; }
       div[data-testid="stMetricValue"] { color:var(--ink); font-family:Manrope,sans-serif; }
       div[data-testid="stMetricDelta"] { font-size:.76rem; }
       .info-card { padding:1rem 1.15rem; border:1px solid var(--line); border-radius:14px; background:white; min-height:115px; }
@@ -140,6 +142,15 @@ sample = pd.DataFrame([{
 }])[features]
 probability = float(model.predict_proba(sample)[0, 1])
 
+def render_metric_card(column, label, value):
+    column.markdown(
+        f'''<div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:14px;padding:1rem 1.05rem;min-height:100px">
+          <div style="color:#1F2937;font-size:.88rem;font-weight:700;margin-bottom:.5rem">{label}</div>
+          <div style="color:#111827;font-size:1.9rem;font-weight:700;line-height:1.2">{value}</div>
+        </div>''',
+        unsafe_allow_html=True,
+    )
+
 st.markdown(
     """
     <div class="hero">
@@ -162,18 +173,18 @@ st.markdown(
 st.markdown('<div class="section-title">Visão geral da base</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="section-note">Base demonstrativa · equipamento selecionado: <b>{selected_asset}</b>.</div>', unsafe_allow_html=True)
 k1, k2, k3, k4 = st.columns(4)
-k1.metric("Equipamentos", f"{len(asset_ids)}")
-k2.metric("Leituras na base", f"{len(df):,}")
-k3.metric("Falhas simuladas", f"{int(df.failure.sum()):,}")
-k4.metric("Recall no teste", f"{metrics['recall_failure']:.1%}", help="Proporção das falhas do conjunto de teste que o modelo identificou.")
+render_metric_card(k1, "Equipamentos", f"{len(asset_ids)}")
+render_metric_card(k2, "Leituras na base", f"{len(df):,}")
+render_metric_card(k3, "Falhas simuladas", f"{int(df.failure.sum()):,}")
+render_metric_card(k4, "Recall no teste", f"{metrics['recall_failure']:.1%}")
 
 st.markdown(f'<div class="section-title">Última leitura · {selected_asset}</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="section-note">{latest_reading["timestamp"].strftime("%d/%m/%Y %H:%M UTC")} · resumo da leitura mais recente deste equipamento.</div>', unsafe_allow_html=True)
 r1, r2, r3, r4 = st.columns(4)
-r1.metric("Temperatura", f"{latest_reading['temperature_c']:.1f} °C")
-r2.metric("Vibração", f"{latest_reading['vibration_mm_s']:.2f} mm/s")
-r3.metric("Pressão", f"{latest_reading['pressure_bar']:.1f} bar")
-r4.metric("Score estimado", f"{latest_reading['failure_score']:.1%}")
+render_metric_card(r1, "Temperatura", f"{latest_reading['temperature_c']:.1f} °C")
+render_metric_card(r2, "Vibração", f"{latest_reading['vibration_mm_s']:.2f} mm/s")
+render_metric_card(r3, "Pressão", f"{latest_reading['pressure_bar']:.1f} bar")
+render_metric_card(r4, "Score estimado", f"{latest_reading['failure_score']:.1%}")
 
 st.markdown("<br>", unsafe_allow_html=True)
 tab_overview, tab_history, tab_simulator, tab_data = st.tabs(["Desempenho", "Histórico", "Simulador", "Dados e método"])
@@ -199,16 +210,16 @@ with tab_overview:
     st.markdown('<div class="section-title">Desempenho do modelo</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-note">Resultados em um conjunto de teste separado da etapa usada para escolher o limiar.</div>', unsafe_allow_html=True)
     a, b, c, d = st.columns(4)
-    a.metric("ROC-AUC", f"{metrics['roc_auc']:.3f}")
-    b.metric("Average Precision", f"{metrics['average_precision']:.3f}")
-    c.metric("Precisão · falhas", f"{metrics['precision_failure']:.1%}")
-    d.metric("F1-score · falhas", f"{metrics['f1_failure']:.1%}")
+    render_metric_card(a, "ROC-AUC", f"{metrics['roc_auc']:.3f}")
+    render_metric_card(b, "Average Precision", f"{metrics['average_precision']:.3f}")
+    render_metric_card(c, "Precisão · falhas", f"{metrics['precision_failure']:.1%}")
+    render_metric_card(d, "F1-score · falhas", f"{metrics['f1_failure']:.1%}")
 
     st.markdown("<br>", unsafe_allow_html=True)
     x1, x2, x3 = st.columns(3)
-    x1.metric("Falhas detectadas", metrics["true_positives"])
-    x2.metric("Falhas não detectadas", metrics["false_negatives"])
-    x3.metric("Alertas falsos", metrics["false_positives"])
+    render_metric_card(x1, "Falhas detectadas", metrics["true_positives"])
+    render_metric_card(x2, "Falhas não detectadas", metrics["false_negatives"])
+    render_metric_card(x3, "Alertas falsos", metrics["false_positives"])
     st.markdown(
         f"""
         <div class="notice-info">
