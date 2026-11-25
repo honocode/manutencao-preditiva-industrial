@@ -20,21 +20,21 @@ st.markdown(
     """
     <style>
       @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
-      :root { --ink:#152b3c; --muted:#667b89; --teal:#087e83; --line:#e3ebef; --paper:#f5f8fa; }
+      :root { --ink:#1F2937; --muted:#667b89; --teal:#1E40AF; --line:#e3ebef; --paper:#F3F4F6; }
       html, body, [class*="css"] { font-family:'DM Sans',sans-serif; color:var(--ink); }
       .stApp { background:var(--paper); }
-      [data-testid="stHeader"] { background:rgba(245,248,250,.88); }
-      [data-testid="stSidebar"] { background:#102b3b; }
+      [data-testid="stHeader"] { background:rgba(243,244,246,.88); }
+      [data-testid="stSidebar"] { background:#172554; }
       [data-testid="stSidebar"] * { color:#f2f7f8 !important; }
       [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p { color:#b8cbd2 !important; }
       [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p { color:#eaf2f4 !important; }
       [data-testid="stSidebar"] [data-baseweb="select"] * { color:#173345 !important; }
       .block-container { padding-top:2.1rem; padding-bottom:3rem; max-width:1440px; }
-      .hero { padding:1.55rem 1.8rem; border-radius:18px; color:white; background:linear-gradient(115deg,#102b3b 0%,#17485a 65%,#087e83 100%); margin-bottom:1rem; box-shadow:0 10px 30px rgba(16,43,59,.12); }
-      .hero-kicker { font-size:.74rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:#9ee0d8; margin:0 0 .45rem 0; }
+      .hero { padding:1.55rem 1.8rem; border-radius:18px; color:white; background:#1E40AF; margin-bottom:1rem; box-shadow:0 10px 30px rgba(16,43,59,.12); }
+      .hero-kicker { font-size:.74rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:#bfdbfe; margin:0 0 .45rem 0; }
       .hero h1 { font-family:Manrope,sans-serif; color:white; font-size:2rem; margin:0; letter-spacing:-.03em; }
       .hero-sub { color:#d2e4e8; margin:.45rem 0 0 0; font-size:.98rem; }
-      .status-pill { display:inline-block; border:1px solid rgba(255,255,255,.28); border-radius:999px; padding:.32rem .65rem; font-size:.73rem; font-weight:700; letter-spacing:.04em; color:#d8f4ed; background:rgba(255,255,255,.08); }
+      .status-pill { display:inline-block; border:1px solid rgba(255,255,255,.28); border-radius:999px; padding:.32rem .65rem; font-size:.73rem; font-weight:700; letter-spacing:.04em; color:#dbeafe; background:rgba(255,255,255,.08); }
       .section-title { font-family:Manrope,sans-serif; font-size:1.15rem; font-weight:750; color:var(--ink); margin:.7rem 0 .15rem 0; }
       .section-note { color:var(--muted); font-size:.88rem; margin:0 0 .85rem 0; }
       div[data-testid="stMetric"] { background:white; border:1px solid var(--line); border-radius:14px; padding:1rem 1.05rem; box-shadow:0 3px 12px rgba(20,48,65,.035); }
@@ -48,7 +48,12 @@ st.markdown(
       .stTabs [data-baseweb="tab-list"] { gap:.45rem; border-bottom:1px solid var(--line); }
       .stTabs [data-baseweb="tab"] { background:transparent; border-radius:8px 8px 0 0; padding:.65rem 1rem; }
       .stTabs [aria-selected="true"] { color:var(--teal); }
-      div[data-testid="stAlert"] { border-radius:12px; }
+      div[data-testid="stAlert"] { border-radius:12px; color:#1F2937; background:#FFFFFF !important; border:1px solid #E5E7EB; }
+      div[data-testid="stAlert"] p { color:#1F2937 !important; }
+      div[data-testid="stAlert"] [data-testid="stMarkdownContainer"] { color:#1F2937 !important; background:#FFFFFF !important; }
+      .notice-warning { display:flex; align-items:flex-start; gap:.75rem; margin:0 0 1rem; padding:.9rem 1rem; color:#1F2937; background:#FFFFFF; border:1px solid #E5E7EB; border-left:4px solid #D97706; border-radius:12px; }
+      .notice-warning-icon { flex:0 0 auto; line-height:1.4; }
+      .notice-warning-text { color:#1F2937; line-height:1.5; }
       .footnote { color:#738692; font-size:.78rem; padding-top:.6rem; }
       hr { border-color:var(--line); }
     </style>
@@ -142,7 +147,15 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-st.warning("Este painel usa dados sintéticos para fins educacionais. As estimativas não foram validadas para máquinas reais.", icon="⚠️")
+st.markdown(
+    """
+    <div class="notice-warning">
+      <span class="notice-warning-icon">⚠️</span>
+      <span class="notice-warning-text">Este painel usa dados sintéticos para fins educacionais. As estimativas não foram validadas para máquinas reais.</span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.markdown('<div class="section-title">Visão geral da base</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="section-note">Base demonstrativa · equipamento selecionado: <b>{selected_asset}</b>.</div>', unsafe_allow_html=True)
