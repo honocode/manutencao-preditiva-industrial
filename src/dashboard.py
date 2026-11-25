@@ -34,7 +34,6 @@ st.markdown(
       .hero-kicker { font-size:.74rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:#bfdbfe; margin:0 0 .45rem 0; }
       .hero h1 { font-family:Manrope,sans-serif; color:white; font-size:2rem; margin:0; letter-spacing:-.03em; }
       .hero-sub { color:#d2e4e8; margin:.45rem 0 0 0; font-size:.98rem; }
-      .status-pill { display:inline-block; border:1px solid rgba(255,255,255,.28); border-radius:999px; padding:.32rem .65rem; font-size:.73rem; font-weight:700; letter-spacing:.04em; color:#dbeafe; background:rgba(255,255,255,.08); }
       .section-title { font-family:Manrope,sans-serif; font-size:1.15rem; font-weight:750; color:var(--ink); margin:.7rem 0 .15rem 0; }
       .section-note { color:var(--muted); font-size:.88rem; margin:0 0 .85rem 0; }
       div[data-testid="stMetric"] { background:white; border:1px solid var(--line); border-radius:14px; padding:1rem 1.05rem; box-shadow:0 3px 12px rgba(20,48,65,.035); }
@@ -143,7 +142,6 @@ st.markdown(
       <div class="hero-kicker">Painel de confiabilidade</div>
       <h1>Manutenção preditiva</h1>
       <p class="hero-sub">Visão demonstrativa da condição dos equipamentos e do desempenho do modelo.</p>
-      <span class="status-pill">●  AMBIENTE DE DEMONSTRAÇÃO</span>
     </div>
     """,
     unsafe_allow_html=True,
