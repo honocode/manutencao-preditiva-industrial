@@ -151,9 +151,10 @@ sample = pd.DataFrame([{
 }])[features]
 probability = float(model.predict_proba(sample)[0, 1])
 
-def render_metric_card(column, label, value):
+def render_metric_card(column, label, value, square=False):
+    border_style = "border:0;border-radius:0;" if square else "border:1px solid #E5E7EB;border-radius:14px;"
     column.markdown(
-        f'''<div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:14px;padding:1rem 1.05rem;min-height:100px">
+        f'''<div style="background:#FFFFFF;{border_style}padding:1rem 1.05rem;min-height:100px">
           <div style="color:#1F2937;font-size:.88rem;font-weight:700;margin-bottom:.5rem">{label}</div>
           <div style="color:#111827;font-size:1.9rem;font-weight:700;line-height:1.2">{value}</div>
         </div>''',
@@ -173,18 +174,18 @@ st.markdown(
 st.markdown('<div class="section-title">Visão geral da base</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="section-note">Base demonstrativa · equipamento selecionado: <b>{selected_asset}</b>.</div>', unsafe_allow_html=True)
 k1, k2, k3, k4 = st.columns(4)
-render_metric_card(k1, "Equipamentos", f"{len(asset_ids)}")
-render_metric_card(k2, "Leituras na base", f"{len(df):,}")
-render_metric_card(k3, "Falhas simuladas", f"{int(df.failure.sum()):,}")
-render_metric_card(k4, "Recall no teste", f"{metrics['recall_failure']:.1%}")
+render_metric_card(k1, "Equipamentos", f"{len(asset_ids)}", square=True)
+render_metric_card(k2, "Leituras na base", f"{len(df):,}", square=True)
+render_metric_card(k3, "Falhas simuladas", f"{int(df.failure.sum()):,}", square=True)
+render_metric_card(k4, "Recall no teste", f"{metrics['recall_failure']:.1%}", square=True)
 
 st.markdown(f'<div class="section-title">Última leitura · {selected_asset}</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="section-note">{latest_reading["timestamp"].strftime("%d/%m/%Y %H:%M UTC")} · resumo da leitura mais recente deste equipamento.</div>', unsafe_allow_html=True)
 r1, r2, r3, r4 = st.columns(4)
-render_metric_card(r1, "Temperatura", f"{latest_reading['temperature_c']:.1f} °C")
-render_metric_card(r2, "Vibração", f"{latest_reading['vibration_mm_s']:.2f} mm/s")
-render_metric_card(r3, "Pressão", f"{latest_reading['pressure_bar']:.1f} bar")
-render_metric_card(r4, "Score estimado", f"{latest_reading['failure_score']:.1%}")
+render_metric_card(r1, "Temperatura", f"{latest_reading['temperature_c']:.1f} °C", square=True)
+render_metric_card(r2, "Vibração", f"{latest_reading['vibration_mm_s']:.2f} mm/s", square=True)
+render_metric_card(r3, "Pressão", f"{latest_reading['pressure_bar']:.1f} bar", square=True)
+render_metric_card(r4, "Score estimado", f"{latest_reading['failure_score']:.1%}", square=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 tab_overview, tab_history, tab_simulator, tab_data = st.tabs(["Desempenho", "Histórico", "Simulador", "Dados e método"])
@@ -210,16 +211,16 @@ with tab_overview:
     st.markdown('<div class="section-title">Desempenho do modelo</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-note">Resultados em um conjunto de teste separado da etapa usada para escolher o limiar.</div>', unsafe_allow_html=True)
     a, b, c, d = st.columns(4)
-    render_metric_card(a, "ROC-AUC", f"{metrics['roc_auc']:.3f}")
-    render_metric_card(b, "Average Precision", f"{metrics['average_precision']:.3f}")
-    render_metric_card(c, "Precisão · falhas", f"{metrics['precision_failure']:.1%}")
-    render_metric_card(d, "F1-score · falhas", f"{metrics['f1_failure']:.1%}")
+    render_metric_card(a, "ROC-AUC", f"{metrics['roc_auc']:.3f}", square=True)
+    render_metric_card(b, "Average Precision", f"{metrics['average_precision']:.3f}", square=True)
+    render_metric_card(c, "Precisão · falhas", f"{metrics['precision_failure']:.1%}", square=True)
+    render_metric_card(d, "F1-score · falhas", f"{metrics['f1_failure']:.1%}", square=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
     x1, x2, x3 = st.columns(3)
-    render_metric_card(x1, "Falhas detectadas", metrics["true_positives"])
-    render_metric_card(x2, "Falhas não detectadas", metrics["false_negatives"])
-    render_metric_card(x3, "Alertas falsos", metrics["false_positives"])
+    render_metric_card(x1, "Falhas detectadas", metrics["true_positives"], square=True)
+    render_metric_card(x2, "Falhas não detectadas", metrics["false_negatives"], square=True)
+    render_metric_card(x3, "Alertas falsos", metrics["false_positives"], square=True)
     st.markdown(
         f"""
         <div class="notice-info">
